@@ -1,0 +1,6 @@
+**/__pycache__/**
+**/log/**
+**.ipynb_checkpoints**
+stderr_errors.txt
+stdout_output.txt
+.idea/**
