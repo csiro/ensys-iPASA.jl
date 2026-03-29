@@ -3,4 +3,7 @@
 **.ipynb_checkpoints**
 stderr_errors.txt
 stdout_output.txt
+simulation_output.txt
+ISP_data_processing/data/output/2024_ISP_Step_Change_20yrs_scaled.csv
+data/pras_metrics_output
 .idea/**

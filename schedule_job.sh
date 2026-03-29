@@ -8,7 +8,7 @@
 #SBATCH --partition=cfd
 #SBATCH --ntasks=10
 #SBATCH --cpus-per-task 1
-#SBATCH --mem=190g
+#SBATCH --mem=396g
 
 cd /datasets/work/en-energy-sys/work/users/bal246/REPO/github/ensys-arpst-RAAssessment
 

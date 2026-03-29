@@ -64,16 +64,15 @@ sys, pm_data, base_storage_data = initialise_system_v3(file_path)
 println("system loaded")
 # Add future generators and storage
 
-add_future_gen(sys)
-add_future_storage(sys)
 
-# Update the time added for storage and expiry dates for the thermal generators 
 location = joinpath(pwd(), "data", "sc_data")
 file_path = joinpath(location, "future_gen_thermal_exp_pp.csv")
-
+add_future_gen(sys, scenario, location)
+add_future_storage(sys, scenario, location)
 add_future_status_therm_stor(sys, scenario, file_path, "gen")
 file_path = joinpath(location, "future_storage_pp.csv")
 add_future_status_therm_stor(sys, scenario, file_path, "storage")
+println("Added thermal generators and storage time series data")
 
 if scenario == "ST"
     time_series_data = built_load_one_yearly_TSdata(sys)
@@ -123,7 +122,7 @@ println("storage time series added into the gps")
 resultspecs = (Shortfall(), Surplus(), Flow(), Utilization(), StorageEnergy(),
     GeneratorStorageEnergy(),GeneratorAvailability(), LineAvailability(), StorageAvailability(),
     GeneratorStorageAvailability())
-smallsample = SequentialMonteCarlo(samples=100, seed=123, threaded=true)
+smallsample = SequentialMonteCarlo(samples=1000, seed=123, threaded=true)
 shortfall_rs, surplus_rs, flow_rs, util_rs, energy, gs_energy, ga, la, sa, gsa =
         assess(gps, smallsample, resultspecs...)
 println("PRAS simulation done")

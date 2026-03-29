@@ -440,7 +440,7 @@ function create_solar_wind_rez(d::Dict, bus::ACBus)
     rating = calculate_gen_rating(d["pmax"], d["qmax"], base_conversion)
     if lowercase(d["fuel_type"]) == "solar"
         prime_mover_type = PrimeMovers.PVe
-    elseif lowercase(d["fuel_type"]) == "wind"
+    elseif lowercase(d["fuel_type"]) == "wind" || lowercase(d["fuel_type"]) == "offshore_wind"
         prime_mover_type = PrimeMovers.WT    
     end    
     return RenewableDispatch(
@@ -483,9 +483,15 @@ function make_res_storage(d::Dict, bus::ACBus)
     return storage
 end
 
-function add_future_gen(sys)
-    location = joinpath(pwd(), "data", "sc_data")
-    file_path = joinpath(location, "future_gen_2025_pp.csv")
+function add_future_gen(sys, scenario, location)
+    if scenario == "ST"
+        file_path = joinpath(location, "future_gen_2025_pp.csv")
+    elseif scenario == "MT" || scenario == "SUM_ED"
+        file_path = joinpath(location, "future_gen_2030_pp.csv")
+    else
+        file_path = joinpath(location, "future_gen_pp.csv")
+    end
+            
     fut_gn = CSV.File(file_path)
     for row in fut_gn
         row_dict = Dict(String(k) => v for (k, v) in pairs(row))
@@ -494,7 +500,7 @@ function add_future_gen(sys)
         bus = get_component(ACBus, sys, bus_name)
         fuel_type = lowercase(row_dict["fuel_type"])
         
-        if fuel_type == "solar" || fuel_type == "wind" 
+        if fuel_type == "solar" || fuel_type == "wind" || fuel_type == "offshore_wind"
             gen_com = create_solar_wind_rez(row_dict, bus)
         elseif fuel_type == "hydro"
             gen_com = create_hydro_dispatch(row_dict, bus)
@@ -503,7 +509,7 @@ function add_future_gen(sys)
         end
         try
             add_component!(sys, gen_com)
-            println("Generator added: ", gen_name,",", fuel_type)
+            #println("Generator added: ", gen_name,",", fuel_type)
         catch e
             if e isa ArgumentError
                 println("Generator is already exist: ", gen_name)
@@ -512,9 +518,14 @@ function add_future_gen(sys)
     end
 end
 
-function add_future_storage(sys)
-    location = joinpath(pwd(), "data", "sc_data")
-    file_path = joinpath(location, "future_storage_pp.csv")
+function add_future_storage(sys, scenario, location)
+    if scenario == "ST"
+        file_path = joinpath(location, "future_storage_2025_pp.csv")
+    elseif scenario == "MT" || scenario == "SUM_ED"
+        file_path = joinpath(location, "future_storage_2030_pp.csv")
+    else
+        file_path = joinpath(location, "future_storage_pp.csv")
+    end
     fut_st = CSV.File(file_path)
     for row in fut_st
         row_dict = Dict(String(k) => v for (k, v) in pairs(row))
@@ -524,7 +535,7 @@ function add_future_storage(sys)
         stg_com = make_res_storage(row_dict, bus)
         try
             add_component!(sys, stg_com)
-            println("Storage added: ", st_name)
+            #println("Storage added: ", st_name)
         catch e
             if e isa ArgumentError
                 println("Storage is already exist: ", st_name)
