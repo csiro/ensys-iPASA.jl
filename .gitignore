@@ -5,5 +5,6 @@ stderr_errors.txt
 stdout_output.txt
 simulation_output.txt
 ISP_data_processing/data/output/2024_ISP_Step_Change_20yrs_scaled.csv
+data/sc_data/nw_2024_prod_v1.m
 data/pras_metrics_output
 .idea/**

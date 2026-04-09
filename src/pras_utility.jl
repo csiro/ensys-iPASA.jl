@@ -85,6 +85,7 @@ function save_shortfall_eue_metrics(gps, shortfall_rs, scenario, odir)
     return dd
 end
 
+
 function flow_utilisation(metrics, timeseries)
     flow_util = vcat(hcat("timestamp", timeseries),
          hcat(metrics.interfaces, metrics[:, :]))

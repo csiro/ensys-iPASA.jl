@@ -1,4 +1,95 @@
 
+function get_load_gen_storage_system(sys, ofile)
+    PSY.set_units_base_system!(sys, PSY.UnitSystem.NATURAL_UNITS)
+    gen = 0
+    load = 0
+    hydro = 0
+    storage = 0
+    thermal_rating = 0
+    ren_rating = 0
+    pgen = Dict()
+    pl = Dict()
+    storage_cap = 0
+    power_rating = 0
+    gen_rating = 0
+    thermal_active = 0
+    ren_wind_active = 0
+    ren_wind_rating = 0
+    ren_nw_active = 0
+    ren_nw_rating = 0
+    ren_region_active_power = zeros(15, 1)
+    ren_region_rating = zeros(15, 1)
+    ther_region_active_power = zeros(15, 1)
+    ther_region_rating = zeros(15, 1)
+    ld_region_active_power = zeros(15, 1)
+    hydro_act = zeros(15, 1)
+    stg_act = zeros(15, 1)
+    stg_cap = zeros(15,1)
+   
+    for ll in collect(PSY.get_components(PSY.RenewableDispatch, sys))
+        area_name = parse.(Int, get_name(get_area(get_bus(ll))))
+        gen += get_active_power(ll)
+        
+        if PSY.get_prime_mover_type(ll) == PrimeMovers.WT
+            ren_wind_active += get_active_power(ll)
+            ren_wind_rating += get_rating(ll)
+        else
+            ren_nw_rating += get_rating(ll)
+            ren_nw_active += get_active_power(ll)
+        end
+        ren_region_active_power[area_name] += get_active_power(ll)
+        ren_region_rating[area_name] += get_rating(ll)
+        
+    end
+    for ll in collect(PSY.get_components(PSY.ThermalStandard, sys))
+        area_name = parse.(Int, get_name(get_area(get_bus(ll))))
+        gen += get_rating(ll)  
+        thermal_rating += get_rating(ll)
+        thermal_active += get_active_power(ll)
+        ther_region_active_power[area_name] += get_active_power(ll)
+        ther_region_rating[area_name] += get_rating(ll)
+    end
+    for ll in collect(PSY.get_components(PSY.HydroDispatch, sys))
+        area_name = parse.(Int, get_name(get_area(get_bus(ll))))
+        gen += get_active_power(ll) 
+        hydro += get_active_power(ll)
+        hydro_act[area_name] += get_active_power(ll)
+        
+    end
+    
+    for ll in collect(PSY.get_components(PSY.EnergyReservoirStorage, sys))
+        area_name = parse.(Int, get_name(get_area(get_bus(ll))))
+        stg_act[area_name] += get_active_power(ll)
+        storage += get_active_power(ll) 
+        storage_cap += get_storage_capacity(ll)
+        stg_cap[area_name] += get_storage_capacity(ll)
+        
+    end
+    for ll in collect(PSY.get_components(PSY.PowerLoad, sys))
+        area_name = parse.(Int, get_name(get_area(get_bus(ll))))
+        load += get_active_power(ll) 
+        ld_region_active_power[area_name] += get_active_power(ll)
+        
+    end 
+    lg_dict = Dict("load" => load, "thermal_rating" => thermal_rating, "thermal_active" => thermal_active,
+        "ren_wind_active" => ren_wind_active, "ren_wind_rating" => ren_wind_rating,
+        "ren_nw_rating" => ren_nw_rating, "ren_nw_active" => ren_nw_active, "hydro" => hydro,
+        "storage" => storage, "storage_cap" => storage_cap)
+    region_base_data = DataFrame(
+        ren_act = vec(ren_region_active_power),
+        ren_rat = vec(ren_region_rating),
+        thermal_act = vec(ther_region_active_power),
+        thermal_rating = vec(ther_region_rating),
+        storage_act = vec(stg_act),
+        storage_cap = vec(stg_cap),
+        hydro_act = vec(hydro_act),
+        load = vec(ld_region_active_power)
+    )
+    CSV.write(ofile, region_base_data)
+    return lg_dict, region_base_data
+end
+
+
 function load_scaled_data(input_fl, res)
     df = CSV.read(input_fl, DataFrame)
     if res == 60  # Get only hourly data

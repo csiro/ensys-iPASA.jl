@@ -19,6 +19,7 @@ def load_eue_shortfall(area_code_region, scenario, IDIR):
     df.columns = df.columns.map(string_key_dict)
     return df
 
+
 def reg_load_gen(shortfall_data):
     region_gens = {}
     region_load = {}
@@ -309,9 +310,9 @@ def find_max_eue_regions(area_code_region, eue_df):
 
 def plot_special_case(flow_for):
  
-    figsize = (10,5)
+    figsize = (25,10)
     fig, axes = plt.subplots(figsize=figsize, nrows=3, ncols=5)
-    plt.subplots_adjust(wspace=0, hspace=0)
+    #plt.subplots_adjust(wspace=0, hspace=0)
     fig.suptitle("Daily Average flow")
     flow_for.columns = flow_for.columns.str.replace('_mean_flow', '')
     x = 0
@@ -352,99 +353,89 @@ def get_reg_load_gen(shortfall_data):
     return region_load, region_gens
 
 
+def set_bold(ax1):
+    for label in ax1.get_xticklabels():
+        label.set_fontweight('bold')
+    for label in ax1.get_yticklabels():
+        label.set_fontweight('bold')
+    ax1.set_ylabel("NEUE", fontweight='bold')
+    
+    ax1.legend(prop={'weight': 'bold'}, reverse=True)  
+    return ax1
+
+
 def seasonal_ppmm_stats(shortfall_data, area_code_region, 
                         scenario, IDIR, figsize):
-    
-    fig, (ax1,ax2) = plt.subplots(figsize=figsize, nrows=2, ncols=1)
+    summer_months = [12, 1, 2]  
+    spring_months = [9, 10, 11]
+    winter_months = [6, 7, 8] 
+    autumn_months = [3, 4, 5]
     colors = [
             'red', 'blue', 'green', 'purple', 'orange',
             'cyan', 'magenta', 'lime', 'pink', 'teal',
             'brown', 'gray', 'olive', 'navy', 'gold'
         ]
-    
-    summer_months = [12, 1, 2]  
-    spring_months = [9,10,11]
-    winter_months = [6, 7, 8] 
-    autumn_months = [3, 4, 5]
-    eue_df = load_eue_shortfall(area_code_region, scenario, IDIR)
-    system_load = 0
-    for i, cap in enumerate(shortfall_data['region_results']):
-        reg = area_code_region[int(cap["name"])]
-        tot_load = sum(cap['load'])
-        system_load += tot_load
-    
-    eue_df['NSW'] = eue_df['NNSW'] + eue_df['CNSW'] + eue_df['SNW'] + eue_df['SNSW']
-    eue_df['VIC'] = eue_df['WNV'] + eue_df['MEL'] + eue_df['SEV']
-    eue_df['QLD'] = eue_df['NQ'] + eue_df['CQ'] + eue_df['GG'] + eue_df['SQ']
-    eue_df['SA'] = eue_df['NSA'] + eue_df['CSA'] + eue_df['SESA']
-
-    region_cols = ['NSW','VIC','QLD','SA','TAS']
-    sub_regions = ['NNSW', 'CNSW', 'SNW', 'SNSW', 'WNV', 'MEL', 'SEV', 'NQ', 
-                   'CQ', 'GG', 'SQ', 'NSA', 'CSA', 'SESA', 'TAS']
-    markers = ['s:', 'x--', 'o-', 'v-', '^-', '<-','','','','','','','','','']
-    aa = eue_df.resample('ME').max()
-    aa = (aa/system_load)
-    columns = aa.columns.to_list()
-    ss = ((aa.max().apply(lambda x: round(x, 8)))*1000000)
-    ss = pd.DataFrame(ss)
-    sub_region_list =  ss.sort_values(by=0, ascending=False).index.tolist()
-    remove_set =  set(region_cols)
-    marker_cols = [item for item in sub_region_list if item not in remove_set]
-    
-    df = eue_df.copy()
-    df = (df/system_load) * 1000000 * 100
-    df = df[marker_cols]
+    region_map = {"NNSW":"NSW", "CNSW":"NSW", "SNW":"NSW", "SNSW":"NSW", "WNV":"VIC",
+                    "MEL":"VIC", "SEV":"VIC",  "NQ":"QLD", "CQ":"QLD", "GG":"QLD",
+                    "SQ":"QLD", "NSA":"SA", "CSA":"SA", "SESA":"SA", "TAS":"TAS"}
+    df = load_eue_shortfall(area_code_region, scenario, IDIR)
     df['season'] = len(df) * [""]
     df.loc[df.index.month.isin(summer_months), "season"] = "summer"
     df.loc[df.index.month.isin(spring_months), "season"] = "spring"
     df.loc[df.index.month.isin(winter_months), "season"] = "winter"
     df.loc[df.index.month.isin(autumn_months), "season"] = "autumn"
     custom_category =["summer", "autumn", "winter", "spring"]
-    
-    #seasonal_data = df.groupby([df.index.year, "season"]).mean()
-    filter_df = df.copy()
-    seasonal_data = filter_df.groupby([filter_df.index.year, "season"]).mean().reset_index()
+
+    seasonal_data = df.groupby([df.index.year, "season"]).sum().reset_index()
     seasonal_data['season'] = pd.Categorical(seasonal_data['season'], categories=custom_category, ordered=True)
     seasonal_data = seasonal_data.sort_values(by=['timestamp', 'season'])
     seasonal_data = seasonal_data.set_index(['timestamp', 'season'])
-    #seasonal_data['SNW'].groupby([seasonal_data['SNW'].index, "season"]).mean().plot(ax=ax1,color='yellow')
+    seasonal_data['NSW'] = seasonal_data['NNSW'] + seasonal_data['CNSW'] + seasonal_data['SNW'] + seasonal_data['SNSW']
+    seasonal_data['VIC'] = seasonal_data['WNV'] + seasonal_data['MEL'] + seasonal_data['SEV']
+    seasonal_data['QLD']= seasonal_data['NQ'] + seasonal_data['CQ'] + seasonal_data['GG'] + seasonal_data['SQ']
+    seasonal_data['SA'] = seasonal_data['NSA'] + seasonal_data['CSA'] + seasonal_data['SESA']
+    load_data = pd.DataFrame()
+    for i, cap in enumerate(shortfall_data['region_results']):
+        reg = area_code_region[int(cap["name"])]
+        load_data[reg] = cap['load']
+    if scenario == "LT":
+        freq = "60min"
+    else:
+        freq = "30min"
+    
+    full_range = pd.date_range(start=df.index.min(), end=df.index.max(), freq=freq)
+    df = df.reindex(full_range, fill_value=0)
+    df.index.name = "timestamp"
+    load_data = load_data.set_index(df.index)
+    load_data.loc[load_data.index.month.isin(summer_months), "season"] = "summer"
+    load_data.loc[load_data.index.month.isin(spring_months), "season"] = "spring"
+    load_data.loc[load_data.index.month.isin(winter_months), "season"] = "winter"
+    load_data.loc[load_data.index.month.isin(autumn_months), "season"] = "autumn"
+    custom_category =["summer", "autumn", "winter", "spring"]
+   
+    seasonal_data_load = load_data.groupby([load_data.index.year, "season"]).sum().reset_index()
+    seasonal_data_load['season'] = pd.Categorical(seasonal_data_load['season'], categories=custom_category, ordered=True)
+    seasonal_data_load = seasonal_data_load.sort_values(by=['timestamp', 'season'])
+    seasonal_data_load = seasonal_data_load.set_index(['timestamp', 'season'])
+    seasonal_data_load['NSW'] = seasonal_data_load['NNSW'] + seasonal_data_load['CNSW'] + seasonal_data_load['SNW'] + seasonal_data_load['SNSW']
+    seasonal_data_load['VIC'] = seasonal_data_load['WNV'] + seasonal_data_load['MEL'] + seasonal_data_load['SEV']
+    seasonal_data_load['QLD'] = seasonal_data_load['NQ'] + seasonal_data_load['CQ'] + seasonal_data_load['GG'] + seasonal_data_load['SQ']
+    seasonal_data_load['SA'] = seasonal_data_load['NSA'] + seasonal_data_load['CSA'] + seasonal_data_load['SESA']
+
+    fig, ax1 = plt.subplots(figsize=figsize, nrows=1, ncols=1)
+    seasonal_data = seasonal_data/seasonal_data_load
+    
+    seasonal_data[region_map.keys()].plot.area(ax=ax1, color=colors)
     ax1.set_xticks(list(range(0, len(seasonal_data))), labels=seasonal_data.index.tolist())
-    #ax1.set_xticklabels(seasonal_data.index.tolist(), rotation=45, ha='right')
-    ax1.set_xticklabels("")
-    #del seasonal_data['SNW']
-    #df_selected = seasonal_data.drop('SNW', axis=1) 
-    seasonal_data.plot.area(ax=ax1, color=colors)
-    #seasonal_data['SNW'].plot(ax=ax1,color='black', linestyle='--', lw=2, legend=True)
-     
+    ax1.set_xticklabels(seasonal_data.index.tolist(), rotation=45, ha='right')
+    ax1.set_xlabel('')
+    ax1 = set_bold(ax1)
+    title = "Seasonal NEUE Metrics for scenario: " + scenario + "\n for all areas"
+    ax1.set_title(title, weight="bold")
     ax1.grid()
     
-    df = eue_df.copy()
-    df = (df/system_load) * 1000000 * 100
-    df = df[region_cols]
-    df['season'] = len(df) * [""]
-    df.loc[df.index.month.isin(summer_months), "season"] = "summer"
-    df.loc[df.index.month.isin(spring_months), "season"] = "spring"
-    df.loc[df.index.month.isin(winter_months), "season"] = "winter"
-    df.loc[df.index.month.isin(autumn_months), "season"] = "autumn"
-    seasonal_data = df.groupby([df.index.year, "season"]).mean().reset_index()
+    return seasonal_data
     
-    seasonal_data['season'] = pd.Categorical(seasonal_data['season'], categories=custom_category, ordered=True)
-    seasonal_data = seasonal_data.sort_values(by=['timestamp', 'season'])
-    seasonal_data = seasonal_data.set_index(['timestamp', 'season'])
-    
-    seasonal_data.plot.area(ax=ax2, color=colors)
-    ax2.set_xticks(list(range(0, len(seasonal_data))), labels=seasonal_data.index.tolist())
-    #for label in ax2.get_xticklabels():
-    #    label.set_rotation(45,ha='right') 
-    ax2.set_xticklabels(seasonal_data.index.tolist(), rotation=45, ha='right')
-    ax2.grid()
-    plt.subplots_adjust(wspace=0.1, hspace=0)
-    ax2.set_xlabel('')
-    title = "Seasonal Parts Per Million Metrics for " + scenario + " for all regions\n"
-    
-    aa = ax1.set_title(title)
-    return seasonal_data, system_load
-
     
 def get_data_simu(shortfall_data):
     load_gens_simu = {} 
@@ -458,9 +449,9 @@ def get_data_simu(shortfall_data):
 
 def plot_yearly_rlg_v1(load_gens_simu, shortfall_data, 
                        resample='monthly', scenario="MT"):
-    figsize = (20,10)
+    figsize = (25,10)
     fig, axes = plt.subplots(figsize=figsize, nrows=3, ncols=5)
-    plt.subplots_adjust(wspace=0, hspace=0)
+    # plt.subplots_adjust(wspace=0, hspace=0)
     if resample == "monthly":
         title = "Average "+resample+" load, generation and storage \nfor each regions in the " + scenario
     elif resample == "yearly":
@@ -511,8 +502,8 @@ def plot_yearly_rlg_v1(load_gens_simu, shortfall_data,
         for label in axes[x,y].get_yticklabels():
             label.set_fontweight('bold')
         axes[x,y].set_xlabel('') 
-        if x != 2:
-            axes[x,y].set_xticks([])
+        #if x != 2:
+        #    axes[x,y].set_xticks([])
         axes[x,y].set_title(col, y=0.5, va='top', weight="bold")        
         y += 1
 
@@ -543,13 +534,15 @@ def plot_EUE_lgs(target_region, st_date, en_date,
     my_data.reset_index().plot.scatter(x='timestamp',y=target_region,
                                    label="EUE", color='r', style="*",
                                    s=50, ax=ax1)
+    ax1.set_xlabel("")
+    ax1.tick_params(axis='x', labelrotation=45)
     ax1.legend(prop={'weight': 'bold'})
     for label in ax1.get_xticklabels():
         label.set_fontweight('bold')
     for label in ax1.get_yticklabels():
         label.set_fontweight('bold')
-    ax1.set_ylabel("MWh", fontweight='bold')
-    title = "Expected Unserved Energy in: "+target_region + " for scenario: " + scenario
+    ax1.set_ylabel("MWh/year", fontweight='bold')
+    title = "Expected Unserved Energy in "+target_region + " for scenario: " + scenario
     ax1.set_title(title, weight="bold")
     ax1.grid()
     load_gen, gen_cap = get_all_info(target_region, shortfall_data, area_code_region)
@@ -564,16 +557,17 @@ def plot_EUE_lgs(target_region, st_date, en_date,
         label.set_fontweight('bold')
     ax1.set_ylabel("MW", fontweight='bold')
     ax1.legend(prop={'weight': 'bold'})
-    title = "Load, generation and storage in: "+ target_region + " for scenario: " + scenario
+    title = "Load, generation and storage in "+ target_region + " for scenario: " + scenario
     ax1.set_title(title, weight="bold") 
     ax1.grid()
     
 
-def plot_metrics(flow_for):
-    figsize = (10,5)
+def plot_metrics(flow_for, scenario):
+    figsize = (25,10)
     fig, axes = plt.subplots(figsize=figsize, nrows=3, ncols=5)
-    plt.subplots_adjust(wspace=0, hspace=0)
-    fig.suptitle("Daily Average flow")
+    # plt.subplots_adjust(wspace=0, hspace=0)
+    title = "Daily Average flow (MW) for the scenario: " + scenario
+    fig.suptitle(title, fontweight='bold')
     flow_for.columns = flow_for.columns.str.replace('_mean_flow', '')
     x = 0
     y = 0
@@ -585,13 +579,17 @@ def plot_metrics(flow_for):
             x = 2
             y = 0
         flow_for[col].resample('D').mean().plot(legend=True, ax=axes[x,y])
-        #axes[x,y].set_xlabel("")
-        #axes[x,y].set_xticks([]) 
         axes[x,y].tick_params(axis='x', labelrotation=45)
         axes[x,y].set_xlabel('') 
-        if x != 2:
-            axes[x,y].set_xticks([])
-            
+        #if x != 2:
+        #    axes[x,y].set_xticks([])
+        #else:
+        for label in axes[x,y].get_xticklabels():
+            label.set_fontweight('bold')    
+        axes[x,y].grid() 
+        for label in axes[x,y].get_yticklabels():
+            label.set_fontweight('bold')
+        axes[x,y].legend(prop={'weight': 'bold'})
         y += 1
 
 def util_flow(pras_flow, area_code_region):
@@ -639,7 +637,7 @@ def load_scenario_data(scenario, IDIR, area_code_region):
     #limit_file = "../data/output/pras_interface_lim_for.csv"
     #for_back_limit = for_back_stats(area_code_region, limit_file)
     #plot_cap(for_back_limit, mean_flow)
-    plot_metrics(mean_flow)
+    plot_metrics(mean_flow, scenario)
         
     return mean_flow, std_flow    
 
