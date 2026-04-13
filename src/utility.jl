@@ -907,3 +907,141 @@ function save_newly_built_system(sys, scenario)
     extract_all_branch_info()
     println("system information saved ")
 end
+
+
+function extract_data(sim_st)
+    sim_result = SimulationResults(sim_st)
+    uc_results = get_decision_problem_results(sim_result, "SNEM-SYS")
+
+    gen = PA.get_generation_data(uc_results, curtailment=false)
+    sys_1 = PA.PSI.get_system(uc_results)
+    cat = PA.make_fuel_dictionary(sys_1, curtailment=false, generator_mapping_file="gen_mapping_pg.yaml")
+    fuel = PA.categorize_data(gen.data, cat; curtailment = false)
+    res_dict = read_variables(uc_results)
+
+    gas = sum.(eachrow(fuel["Natural Gas CC"]))
+    hydro = sum.(eachrow(fuel["Hydropower"]))
+#biomass = sum.(eachrow(fuel["Biomass ST"]))
+    PV = sum.(eachrow(fuel["PV"]))
+    Battery = sum.(eachrow(fuel["Battery"]))
+    Wind = sum.(eachrow(fuel["Wind"]))
+#Distillate = sum.(eachrow(fuel["Distillate"]))
+    Coal = sum.(eachrow(fuel["Coal"]))
+    numeric_cols = names(fuel["Unserved Energy"], Not("DateTime"))
+    unserved_energy = sum.(eachrow(fuel["Unserved Energy"][!, numeric_cols]))
+    numeric_cols = names(fuel["Over Generation"], Not("DateTime"))
+    over_gen = sum.(eachrow(fuel["Over Generation"][!, numeric_cols]))
+    fuel_mix = DataFrame(timestamp = fuel["Over Generation"][!,"DateTime"], gas = gas, 
+        Coal=Coal, hydro=hydro,
+        PV = PV, Battery=Battery,Wind=Wind,
+        unserved_energy=unserved_energy,over_gen=over_gen)
+
+    hydro_gen = PA.calc_active_power(make_selector(HydroDispatch), uc_results)
+    numeric_cols = names(hydro_gen, Not("DateTime"))
+    hg = sum.(eachrow(hydro_gen[!, numeric_cols]))
+    renewable_generation = PA.calc_active_power(make_selector(RenewableGen), uc_results)
+    thermal_gen = PA.calc_active_power(make_selector(ThermalStandard), uc_results)
+    load = PA.get_load_data(uc_results)
+    load_agg = PA.combine_categories(load.data)
+    numeric_cols = names(thermal_gen, Not("DateTime"))
+    tg = sum.(eachrow(thermal_gen[!, numeric_cols]))
+    numeric_cols = names(renewable_generation, Not("DateTime"))
+    rg = sum.(eachrow(renewable_generation[!, numeric_cols]))
+#load_df = DataFrame(timestamp = load.time, load = load_agg[:, "Load"], thermal = tg, renewable = rg, hydro = hg)
+    storage_area_selector =
+        make_selector(EnergyReservoirStorage; groupby = (x -> get_name(get_area(get_bus(x)))))
+    df = PA.compute_all(uc_results,
+        (
+            PA.calc_active_power_in,
+            rebuild_selector(storage_area_selector; groupby = :all),
+            "Storage Charging",
+        ),
+        (
+            PA.calc_active_power_out,
+            rebuild_selector(storage_area_selector; groupby = :all),
+            "Storage Discharging",
+        ),
+        (
+            PA.calc_stored_energy,
+            rebuild_selector(storage_area_selector; groupby = :all),
+            "Stored Energy",
+        ),
+    );
+    df[!, "load"] = load_agg[:, "Load"]
+    merged_df = innerjoin(fuel_mix, df, on = :timestamp => :DateTime)
+    return merged_df
+end
+
+function get_template_standard_uc_simulation()
+    template = ProblemTemplate(NetworkModel(CopperPlatePowerModel;use_slacks=true,))
+    PSI.set_device_model!(template, RenewableDispatch, RenewableFullDispatch)
+    PSI.set_device_model!(template, PowerLoad, StaticPowerLoad)
+    PSI.set_device_model!(template, ThermalStandard, ThermalStandardUnitCommitment)
+    device_model = DeviceModel(
+        EnergyReservoirStorage,
+        StorageDispatchWithReserves;
+        attributes = Dict{String, Any}(
+            "reservation" => true,
+            "cycling_limits" => false,
+            "energy_target" => true,
+            "complete_coverage" => false,
+            "regularization" => false,
+        ),
+    )
+    PSI.set_device_model!(template, device_model)
+    PSI.set_device_model!(template, TapTransformer, StaticBranch)
+    PSI.set_device_model!(template, Transformer2W, StaticBranch)
+    PSI.set_device_model!(template, device_model)
+    PSI.set_device_model!(template, HydroDispatch, HydroDispatchRunOfRiver)
+    PSI.set_device_model!(template, DeviceModel(Line, StaticBranch))
+    PSI.set_device_model!(template, DeviceModel(TwoTerminalHVDCLine, HVDCTwoTerminalDispatch))
+    return template
+end
+
+function formulate_decision_model(sys, pasa)
+  # Transform it to Deterministic
+  # Resolution:
+  # Short Term PASA: Half-hourly resolution. six days
+  # Medium Term PASA: Daily resolution. Two years
+    
+    if pasa == "ST"
+        PSY.transform_single_time_series!(sys, Hour(48), Hour(24))
+        
+    elseif pasa == "MT"
+        PSY.transform_single_time_series!(sys, Day(365), Day(1), resolution=Day(1))  
+    end
+    template = get_template_standard_uc_simulation()
+    solver = optimizer_with_attributes(HiGHS.Optimizer,  "mip_rel_gap" => 0.05)
+    problem = DecisionModel(template, sys; optimizer = solver,
+        name="SNEM-SYS", allow_fails = true,)
+    build!(problem; output_dir = mktempdir(; cleanup = true))
+    return problem
+end 
+
+
+function run_simulation(sys, pasa, name, steps)
+    steps = steps
+    #set_run_flag(sys)
+    problem = formulate_decision_model(sys, pasa)
+    models = SimulationModels(;
+        decision_models = [
+            problem
+        ],
+    )
+    sequence = SimulationSequence(;
+        models = models,
+        ini_cond_chronology = InterProblemChronology(),
+    )
+   
+    sim = Simulation(;
+        name = name,
+        steps = steps,
+        models = models,
+        sequence = sequence,
+        initial_time = DateTime("2025-01-10T00:00:00"),
+        simulation_folder = mktempdir(; cleanup = true),
+    )
+    build_out = build!(sim)
+    execute_out = execute!(sim, enable_progress_bar = true)
+    return sim
+end
