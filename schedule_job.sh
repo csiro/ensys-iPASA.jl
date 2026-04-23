@@ -2,8 +2,8 @@
 #SBATCH -A OD-223474
 #SBATCH --output=stdout_output.txt  # Redirect standard output
 #SBATCH --error=stderr_errors.txt   # Redirect standard error
-#SBATCH --job-name=smcs_benchmark
-#SBATCH --time=05:00:00
+#SBATCH --job-name=smcs_worst
+#SBATCH --time=02:00:00
 #SBATCH --nodes=1
 #SBATCH --partition=cfd
 #SBATCH --ntasks=10
@@ -18,7 +18,9 @@ module load julia/1.11.1
 export JULIA_NUM_THREADS=auto
 echo "Job started at: $(date)"
 
-julia --project --threads auto  pras_simulation.jl > simulation_output.txt 2>&1 
+#julia --project --threads auto  pras_simulation_typical.jl > simulation_output_typ.txt 2>&1 
+#julia --project --threads auto  pras_simulation_best.jl > simulation_output_best.txt 2>&1 
+julia --project --threads auto  pras_simulation_worst.jl > simulation_output_worst_2.txt 2>&1 
 
 echo "Intermediate timestamp: $(date)"
 

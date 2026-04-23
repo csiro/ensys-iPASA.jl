@@ -40,10 +40,10 @@ include("src/pras_utility.jl")
 # MT (six years 2024 to 2030 30 minutes reslution), LT (20 years 2024 to 2044 60 minutes resolution) 
 # and SUM_ED (summer extreme days for MT scenario) 
 
-scenario = "LT_BASE"
+scenario = "LT_WORST"
 
 # Define the log file path
-logfile_path = "log/pras_simulation.log"
+logfile_path = "log/pras_simulation_worst_2.log"
 
 # Create a FileLogger for the log file
 file_logger = FileLogger(logfile_path)
@@ -59,7 +59,7 @@ end
 global_logger(timestamp_transformer)
 
 @info "Starting the application.."
-file_path = joinpath(pwd(), "../../../data", "sc_data", "snem_step_change_base_case_2044_2.m")
+file_path = joinpath(pwd(), "../../../data", "sc_data", "snem_step_change_worst_case_2044.m")
 sys, pm_data, base_storage_data = initialise_system_v3(file_path)
 println("system loaded")
 # Add future generators and storage

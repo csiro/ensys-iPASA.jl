@@ -358,7 +358,7 @@ def set_bold(ax1):
         label.set_fontweight('bold')
     for label in ax1.get_yticklabels():
         label.set_fontweight('bold')
-    ax1.set_ylabel("NEUE", fontweight='bold')
+    ax1.set_ylabel("NEUE", fontweight='bold', fontsize=14)
     
     ax1.legend(prop={'weight': 'bold'}, reverse=True)  
     return ax1
@@ -398,7 +398,7 @@ def seasonal_ppmm_stats(shortfall_data, area_code_region,
     for i, cap in enumerate(shortfall_data['region_results']):
         reg = area_code_region[int(cap["name"])]
         load_data[reg] = cap['load']
-    if scenario == "LT":
+    if "LT" in scenario:
         freq = "60min"
     else:
         freq = "30min"
@@ -427,11 +427,13 @@ def seasonal_ppmm_stats(shortfall_data, area_code_region,
     
     seasonal_data[region_map.keys()].plot.area(ax=ax1, color=colors)
     ax1.set_xticks(list(range(0, len(seasonal_data))), labels=seasonal_data.index.tolist())
-    ax1.set_xticklabels(seasonal_data.index.tolist(), rotation=45, ha='right')
+    ax1.set_xticklabels(seasonal_data.index.tolist(), fontweight='bold',
+                        fontsize=14,
+                        rotation=45, ha='right')
     ax1.set_xlabel('')
     ax1 = set_bold(ax1)
     title = "Seasonal NEUE Metrics for scenario: " + scenario + "\n for all areas"
-    ax1.set_title(title, weight="bold")
+    ax1.set_title(title, weight="bold", fontsize=15)
     ax1.grid()
     
     return seasonal_data
@@ -591,6 +593,8 @@ def plot_metrics(flow_for, scenario):
             label.set_fontweight('bold')
         axes[x,y].legend(prop={'weight': 'bold'})
         y += 1
+
+
 
 def util_flow(pras_flow, area_code_region):
     for kk in pras_flow.columns.tolist():

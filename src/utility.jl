@@ -1,4 +1,68 @@
 
+function test_line_core(gps)
+    
+    lines_core = Matrix{String}(undef, length(gps.lines), 4)
+    lines_core_colnames = ["name", "category", "region_from", "region_to"]
+    lines_core[:, 1] = gps.lines.names
+    lines_core[:, 2] = gps.lines.categories
+    for (lines, r_from, r_to) in zip(gps.interface_line_idxs,
+                                     gps.interfaces.regions_from,
+                                     gps.interfaces.regions_to)
+        lines_core[lines, 3] .= gps.regions.names[r_from]
+        lines_core[lines, 4] .= gps.regions.names[r_to]
+    end
+    return lines_core   
+end
+
+function get_pras_lines(gps)
+    
+    lines_core = test_line_core(gps)
+    println("pras lines: ",  size(lines_core,1), ", total matrix length:", length(lines_core))
+    pras_lines_df = DataFrame(lines_core, :auto)
+    new_names = Dict(:x1 => :name, :x2 => :ln_type, :x3 => :area_from,
+    :x4 => :area_to)
+    DataFrames.rename!(pras_lines_df, new_names)
+    rating_dict = Dict()
+    for line in pras_lines_df.name
+        ll = get_component(PSY.Line, sys, line)
+        ln_type = pras_lines_df[pras_lines_df.name .== line, :ln_type][1]
+        if occursin("HVDCLine", ln_type)
+            ll = get_component(PSY.TwoTerminalHVDCLine, sys, line)
+            rating_dict[ll.name] = PSY.get_active_power_limits_from(ll).max
+        else 
+            rating_dict[ll.name] = PSY.get_rating(ll)
+        end
+    end
+    line_pw = DataFrame(String(k) => v for (k, v) in pairs(rating_dict))
+    DataFrames.rename!(line_pw, Dict(:first => :name, :second => :power))
+    pras_lines_df = leftjoin(pras_lines_df, line_pw, on = [:name]; makeunique=true)
+    return pras_lines_df
+end
+
+function save_line_capacity(gps, location, scenario)
+    ints_core = Matrix{String}(undef, length(gps.interfaces), 2)
+    ints_core_colnames = ["region_from", "region_to"]
+
+    ints_core[:, 1] =
+        getindex.(Ref(gps.regions.names), gps.interfaces.regions_from)
+    ints_core[:, 2] =
+        getindex.(Ref(gps.regions.names), gps.interfaces.regions_to)
+    #string_table!(interfaces, "_core", ints_core_colnames, ints_core, strlen)
+    ints_core = DataFrame(ints_core, ints_core_colnames)
+    ints_core_2 = Matrix{Int64}(undef, length(gps.interfaces), 1)
+    ints_core_colnames = ["forward"]
+    ints_core_2[:, 1] .=     
+        gps.interfaces.limit_backward[:,1]
+    ints_core_2 = DataFrame(ints_core_2, ints_core_colnames)
+    ints_core = hcat(ints_core,  ints_core_2)
+    fname = "interface_forward_lines_" * scenario * ".csv"
+    ofile = joinpath(location, fname)
+    
+    CSV.write(ofile, ints_core)
+    return ints_core
+end
+
+
 function get_load_gen_storage_system(sys, ofile)
     PSY.set_units_base_system!(sys, PSY.UnitSystem.NATURAL_UNITS)
     gen = 0
@@ -538,8 +602,8 @@ function create_solar_wind_rez(d::Dict, bus::ACBus)
         name = d["name"],
         available = true,
         bus = bus,
-        active_power = d["pg"] * base_conversion, 
-        reactive_power = d["qg"] * base_conversion, 
+        active_power = d["pmax"] * base_conversion, 
+        reactive_power = d["qmax"] * base_conversion, 
         rating = rating, 
         prime_mover_type = prime_mover_type,
         reactive_power_limits = (min=d["qmin"] * base_conversion, max=d["qmax"] * base_conversion), 
@@ -606,6 +670,26 @@ function add_future_gen(sys, scenario, location)
                 println("Generator is already exist: ", gen_name)
             end
         end
+    end
+end
+
+function add_baseload(sys, scenario, location)
+    
+    file_path = joinpath(location, "base_load_2025.csv")      
+    base_load = CSV.File(file_path)
+    # Create a mapping dictionary: bus_number => bus_name
+    #bus_num_to_name = Dict(get_number(b) => get_name(b) for b in get_components(ACBus, sys))
+    
+    for row in base_load
+        row_dict = Dict(String(k) => v for (k, v) in pairs(row))
+        #bus_name = bus_num_to_name[row_dict["bus_index"]]
+        load_name = row_dict["name"]
+        #bus = get_component(ACBus, sys, bus_name)
+        load = get_component(PowerLoad, sys, load_name)
+        set_active_power!(load, row_dict["pd"]) 
+        set_max_active_power!(load, row_dict["pd"]) 
+        set_reactive_power!(load, row_dict["qd"]) 
+        set_max_reactive_power!(load, row_dict["qd"]) 
     end
 end
 
