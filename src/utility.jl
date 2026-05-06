@@ -1,3 +1,4 @@
+import PowerModels
 
 function test_line_core(gps)
     
@@ -410,6 +411,31 @@ function get_scenario_data(norm_df, scenario_type)
         norm_df = norm_df[start_dt .<= norm_df.timestamp .< end_dt, :]
     end
     return norm_df
+end
+
+function stringify_keys(d::AbstractDict)
+    # Create a new Dict{String, Any} to hold the converted pairs
+    return Dict{String, Any}(
+        string(k) => (v isa AbstractDict ? stringify_keys(v) : v) 
+        for (k, v) in d
+    )
+end
+
+function save_final_base_file(pm_data, base_storage_data)
+    for (kk, my_dict) in pm_data.data
+        if my_dict isa Dict{Int64, Any}
+           pm_data.data[kk] = stringify_keys(my_dict)
+        end
+    end
+    for (kk, vv) in base_storage_data
+        vv["name"] = vv["duid"]
+    end
+    pm_data.data["storage"] = stringify_keys(base_storage_data)
+    pm_data.data["name"] = "snem_step_change_base_case_2044"
+
+    file_path = joinpath(pwd(), "data", "sc_data", "snem_step_change_base_case_2044-final.m")
+    PowerModels.make_mixed_units!(pm_data.data)
+    PowerModels.export_matpower(file_path, pm_data.data)
 end
 
 function create_bat_storage_all(bus, d)

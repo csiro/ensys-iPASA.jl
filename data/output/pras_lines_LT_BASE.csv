@@ -12,12 +12,12 @@ bus_1239-bus_1241-i_line_1239_to_1394_1_cp,ACLine,1,2,184.0
 bus_1189-bus_1215-i_line_1189_to_1215_1_cp,ACLine,2,3,271.0
 bus_2121-bus_2181-i_line_2163_to_2181_1_cp,ACLine,6,7,574.0
 bus_2164-bus_2186-i_line_2164_to_2186_2_cp,ACLine,6,7,428.0
-bus_3540-bus_1304-i_DIRECTLINK_2,HVDCLine,11,9,6000.0
+bus_3540-bus_1304-i_DIRECTLINK_2,HVDCLine,11,9,60.0
 bus_1011-bus_1145-i_line_1095_to_1145_1_cp,ACLine,1,2,689.0
 bus_4131-bus_4149-i_line_4131_to_4149_1_cp,ACLine,13,14,555.0
 bus_2164-bus_2186-i_line_2164_to_2186_4_cp,ACLine,6,7,429.0
-bus_4300-bus_4319-i_line_4308_to_4319_1_cp,ACLine,13,14,90.0
 bus_4123-bus_4292-i_Dec14_line_4123_to_4292_1_dec,ACLine,13,14,131.0
+bus_4300-bus_4319-i_line_4308_to_4319_1_cp,ACLine,13,14,90.0
 bus_2199-bus_2202-i_line_2199_to_2202_3_cp,ACLine,6,7,1518.0
 bus_2208-bus_2200-i_connection V4,ACLine,6,5,1520.0
 bus_2203-bus_2208-i_line_2203_to_2208_2_cp,ACLine,6,5,1533.0
@@ -33,23 +33,23 @@ bus_1105-bus_1114-i_line_1105_to_1114_1_cp,ACLine,4,2,691.0
 bus_1189-bus_1289-i_line_1189_to_1470_1_cp,ACLine,2,3,314.0
 bus_3543-bus_3547-i_line_3543_to_3547_1_cp,ACLine,11,9,535.0
 bus_1218-bus_3405-i_line_1218_to_3473_2_cp,ACLine,1,11,114.99999999999999
-bus_2162-bus_2355-i_MURRAYLINK,HVDCLine,13,5,22000.0
-bus_3540-bus_1304-i_DIRECTLINK_3,HVDCLine,11,9,6000.0
+bus_2162-bus_2355-i_MURRAYLINK,HVDCLine,13,5,220.00000000000003
+bus_3540-bus_1304-i_DIRECTLINK_3,HVDCLine,11,9,60.0
 bus_2106-bus_2177-i_line_2106_to_2177_1_cp,ACLine,6,5,311.0
 bus_1212-bus_1309-i_line_1212_to_1309_1_cp,ACLine,2,3,184.0
 bus_1098-bus_1125-i_line_1098_to_1125_1_cp,ACLine,4,2,656.0
 bus_3558-bus_3591-i_line_3558_to_3591_2_cp,ACLine,8,9,684.0
 bus_3539-bus_3540-i_line_3539_to_3540_2_cp,ACLine,10,9,280.0
 bus_4107-bus_4111-i_line_4107_to_4111_1_cp,ACLine,12,13,530.0
-bus_2206-bus_2202-i_connection V5,ACLine,6,7,1520.0
 bus_2158-bus_2164-i_line_2158_to_2164_1_cp,ACLine,6,7,375.0
+bus_2206-bus_2202-i_connection V5,ACLine,6,7,1520.0
 bus_2216-bus_2240-i_line_2216_to_2240_1_cp,ACLine,6,5,46.0
 bus_1236-bus_1252-i_line_1236_to_1491_1_cp,ACLine,2,3,179.0
 bus_1289-bus_1393-i_line_1391_to_1393_1_cp,ACLine,2,3,196.0
 bus_1109-bus_3650-i_line_1109_to_3650_2_cp,ACLine,1,11,881.0
 bus_1232-bus_1189-i_line_1232_to_1440_1_cp,ACLine,2,3,269.0
 bus_4137-bus_4149-i_line_4146_to_4149_1_cp,ACLine,13,14,578.0
-bus_2202-bus_5149-i_BASSLINK,HVDCLine,15,7,51000.0
+bus_2202-bus_5149-i_BASSLINK,HVDCLine,15,7,509.99999999999994
 bus_1112-bus_1152-i_line_1112_to_1152_1_cp,ACLine,2,3,745.0
 bus_1011-bus_1145-i_line_1095_to_1145_2_cp,ACLine,1,2,601.0
 bus_1118-bus_2191-i_line_1118_to_2191_1_cp,ACLine,4,5,645.0
@@ -58,7 +58,7 @@ bus_1218-bus_3405-i_line_1218_to_3473_1_cp,ACLine,1,11,112.00000000000001
 bus_2196-bus_4101-i_line_2196_to_4151_2_cp,ACLine,5,14,521.0
 bus_1119-bus_1158-i_line_1119_to_1158_2_cp,ACLine,4,2,674.0
 bus_2196-bus_4101-i_line_2196_to_4151_1_cp,ACLine,5,14,517.0
-bus_3540-bus_1304-i_DIRECTLINK_1,HVDCLine,11,9,6000.0
+bus_3540-bus_1304-i_DIRECTLINK_1,HVDCLine,11,9,60.0
 bus_1140-bus_1569-i_line_1141_to_1569_1_cp,ACLine,2,3,690.0
 bus_1310-bus_1433-i_line_1310_to_1433_1_cp,ACLine,4,2,143.0
 bus_2208-bus_2200-i_connection V4_2,ACLine,6,5,1520.0

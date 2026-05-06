@@ -59,7 +59,7 @@ end
 global_logger(timestamp_transformer)
 
 @info "Starting the application.."
-file_path = joinpath(pwd(), "../../../data", "sc_data", "snem_step_change_base_case_2044_2.m")
+file_path = joinpath(pwd(), "../../../data", "sc_data", "snem_step_change_base_case_2044-1.m")
 sys, pm_data, base_storage_data = initialise_system_v3(file_path)
 println("system loaded")
 # Add future generators and storage
@@ -133,7 +133,7 @@ println("storage time series added into the gps")
 resultspecs = (Shortfall(), Surplus(), Flow(), Utilization(), StorageEnergy(),
     GeneratorStorageEnergy(),GeneratorAvailability(), LineAvailability(), StorageAvailability(),
     GeneratorStorageAvailability())
-smallsample = SequentialMonteCarlo(samples=100, seed=123, threaded=true)
+smallsample = SequentialMonteCarlo(samples=50, seed=123, threaded=true)
 shortfall_rs, surplus_rs, flow_rs, util_rs, energy, gs_energy, ga, la, sa, gsa =
         assess(gps, smallsample, resultspecs...)
 println("PRAS simulation done")

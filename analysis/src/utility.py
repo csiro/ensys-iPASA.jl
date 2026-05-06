@@ -364,8 +364,8 @@ def set_bold(ax1):
     return ax1
 
 
-def seasonal_ppmm_stats(shortfall_data, area_code_region, 
-                        scenario, IDIR, figsize):
+def seasonal_ppmm_stats(shortfall_data, area_code_region,
+                        scenario, IDIR, area=True, figsize=(25,10)):
     summer_months = [12, 1, 2]  
     spring_months = [9, 10, 11]
     winter_months = [6, 7, 8] 
@@ -424,8 +424,10 @@ def seasonal_ppmm_stats(shortfall_data, area_code_region,
 
     fig, ax1 = plt.subplots(figsize=figsize, nrows=1, ncols=1)
     seasonal_data = seasonal_data/seasonal_data_load
-    
-    seasonal_data[region_map.keys()].plot.area(ax=ax1, color=colors)
+    if area:
+        seasonal_data[region_map.keys()].plot.area(ax=ax1, color=colors)
+    else:
+        seasonal_data[region_map.keys()].plot(ax=ax1, color=colors)
     ax1.set_xticks(list(range(0, len(seasonal_data))), labels=seasonal_data.index.tolist())
     ax1.set_xticklabels(seasonal_data.index.tolist(), fontweight='bold',
                         fontsize=14,
