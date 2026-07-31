@@ -1,0 +1,11 @@
+# Python dependencies for helper_py/utility.py and the analysis notebooks.
+pandas>=2.0
+numpy>=1.24
+matplotlib>=3.7
+seaborn>=0.13        # pras_simulation_SC_LT_analysis.ipynb
+geopandas>=0.14      # power_simulation_res.ipynb, pre-processing notebook
+shapely>=2.0
+networkx>=3.0        # power_simulation_res.ipynb
+scikit-learn>=1.3    # pre-processing_ISP_data.ipynb (KMeans, MinMaxScaler)
+pyarrow>=14.0        # parquet IO in the pre-processing notebook
+jupyter

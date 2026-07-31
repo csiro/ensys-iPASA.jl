@@ -1,0 +1,6 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+iPASA = "7158b1c5-4a86-4274-8c76-8920a26f5010"
+
+[compat]
+Documenter = "1"
