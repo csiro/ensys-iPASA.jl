@@ -134,7 +134,7 @@ If you use iPASA in your research, please cite:
   title        = {iPASA.jl: Integrated Projected Assessment of System Adequacy for the Australian NEM},
   author       = {{Bala Biswajit, Ghulam Mohy-ud-din}},
   year         = {2026},
-  howpublished = {\url{https://github.com/csiro-energy-systems/iPASA.jl}}
+  howpublished = {\url{https://github.com/csiro-internal/ensys-iPASA.jl}}
 }
 ```
 
