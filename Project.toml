@@ -1,6 +1,6 @@
 name = "iPASA"
 uuid = "7158b1c5-4a86-4274-8c76-8920a26f5010"
-authors = ["CSIRO Energy Systems"]
+authors = ["Bala Biswajit, Ghulam Mohy-ud-din"]
 version = "0.1.0"
 
 [deps]

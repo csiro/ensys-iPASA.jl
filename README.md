@@ -1,12 +1,16 @@
 # iPASA.jl
 
-*Integrated Probabilistic Assessment of System Adequacy for the Australian National Electricity Market (NEM)*
+*Integrated Projected Assessment of System Adequacy for the Australian National Electricity Market (NEM)*
 
-[![CI](https://github.com/csiro-energy-systems/iPASA.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/csiro-energy-systems/iPASA.jl/actions/workflows/ci.yml)
-[![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](LICENSE.md)
 [![Julia](https://img.shields.io/badge/julia-%E2%89%A5%201.10-9558B2?logo=julia)](https://julialang.org/)
+[![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](LICENSE.md)
+[![Status](https://img.shields.io/badge/status-research--grade-orange.svg)]()
+[![CSIRO Energy](https://img.shields.io/badge/CSIRO-Energy-009e8d.svg)](https://www.csiro.au/en/research/technology-space/energy)
+[![AR-PST](https://img.shields.io/badge/AR--PST-Stage%205-009e8d.svg)](https://www.csiro.au/en/research/technology-space/energy/electricity-transition/ar-pst)
+[![CSIRO DAP](https://img.shields.io/badge/CSIRO-DAP-009e8d.svg)](https://doi.org/10.25919/h7py-3f46)
+[![DOI](https://img.shields.io/badge/DOI-10.25919%2Fh7py--3f46-blue.svg)](https://doi.org/10.25919/h7py-3f46)
 
-iPASA is a Julia package for probabilistic resource-adequacy (RA) assessment of the NEM. It couples a 2,000+ bus AC/DC network model of the NEM, clustered into 15 ISP sub-regions, with AEMO 2024 Integrated System Plan (ISP) *Step Change* demand and renewable traces, and evaluates adequacy metrics (LOLE, EUE, NEUE) with sequential Monte Carlo simulation via [PRAS](https://github.com/NREL/PRAS). System modelling is built on the [Sienna](https://www.nrel.gov/analysis/sienna.html) ecosystem ([PowerSystems.jl](https://github.com/NREL-Sienna/PowerSystems.jl), [PowerSimulations.jl](https://github.com/NREL-Sienna/PowerSimulations.jl)) and [PowerModels.jl](https://github.com/lanl-ansi/PowerModels.jl) data parsing.
+iPASA is a Julia package for projected assessment of system adequacy assessment of the NEM. It couples a 2,000+ bus AC/DC network model of the NEM, clustered into 15 ISP sub-regions, with AEMO 2024 Integrated System Plan (ISP) data, and evaluates adequacy metrics (LOLE, EUE, NEUE) with sequential Monte Carlo simulation via [PRAS](https://github.com/NREL/PRAS). The system modelling is built on the [Sienna](https://www.nrel.gov/analysis/sienna.html) ecosystem ([PowerSystems.jl](https://github.com/NREL-Sienna/PowerSystems.jl), [PowerSimulations.jl](https://github.com/NREL-Sienna/PowerSimulations.jl)) and [PowerModels.jl](https://github.com/lanl-ansi/PowerModels.jl) data parsing.
 
 ## Scenarios
 
@@ -127,24 +131,24 @@ If you use iPASA in your research, please cite:
 
 ```bibtex
 @misc{iPASA2026,
-  title        = {iPASA.jl: Integrated Probabilistic Assessment of System Adequacy for the Australian NEM},
-  author       = {{CSIRO Energy Systems}},
+  title        = {iPASA.jl: Integrated Projected Assessment of System Adequacy for the Australian NEM},
+  author       = {{Bala Biswajit, Ghulam Mohy-ud-din}},
   year         = {2026},
   howpublished = {\url{https://github.com/csiro-energy-systems/iPASA.jl}}
 }
 ```
 
-Please also cite the underlying tools: PRAS ([Stephen et al., 2021](https://doi.org/10.11578/dc.20190814.1)), PowerSystems.jl ([Lara et al., 2021](https://doi.org/10.1016/j.softx.2021.100747)) and PowerModels.jl ([Coffrin et al., 2018](https://doi.org/10.23919/PSCC.2018.8442948)). Input data: AEMO 2024 Integrated System Plan.
+Please also cite the underlying tools: PRAS ([Stephen et al., 2021](https://doi.org/10.11578/dc.20190814.1)).
 
 
 ## Development
 
-Lead developer: Mr Bala Biswajit (Senior Engineer, Energy Systems Transition, Energy, CSIRO)
+Lead developer: Mr Bala Biswajit (Senior Engineer, Energy Systems Transition, Energy, CSIRO)  
 Co-developer: Dr Ghulam Mohy-ud-din (Senior Power System Research Engineer, Energy Systems Transition, Energy, CSIRO)
 
 ## Contributing
 
-Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Changes are tracked in [CHANGELOG.md](CHANGELOG.md).
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
