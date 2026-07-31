@@ -10,7 +10,7 @@
 [![CSIRO DAP](https://img.shields.io/badge/CSIRO-DAP-009e8d.svg)](https://doi.org/10.25919/h7py-3f46)
 [![DOI](https://img.shields.io/badge/DOI-10.25919%2Fh7py--3f46-blue.svg)](https://doi.org/10.25919/h7py-3f46)
 
-iPASA is a Julia package for projected assessment of system adequacy assessment of the NEM. It couples a 2,000+ bus AC/DC network model of the NEM, clustered into 15 ISP sub-regions, with AEMO 2024 Integrated System Plan (ISP) data, and evaluates adequacy metrics (LOLE, EUE, NEUE) with sequential Monte Carlo simulation via [PRAS](https://github.com/NREL/PRAS). The system modelling is built on the [Sienna](https://www.nrel.gov/analysis/sienna.html) ecosystem ([PowerSystems.jl](https://github.com/NREL-Sienna/PowerSystems.jl), [PowerSimulations.jl](https://github.com/NREL-Sienna/PowerSimulations.jl)) and [PowerModels.jl](https://github.com/lanl-ansi/PowerModels.jl) data parsing.
+iPASA is a Julia package for projected assessment of system adequacy assessment of the NEM. It couples an open [Synthetic NEM](https://github.com/csiro-energy-systems/Synthetic-NEM-2000bus-Data) network model, clustered into 15 ISP sub-regions, with AEMO 2024 Integrated System Plan (ISP) data, and evaluates adequacy metrics (LOLE, EUE, NEUE) with sequential Monte Carlo simulation via [PRAS](https://github.com/NREL/PRAS). The system modelling is built on the [Sienna](https://www.nrel.gov/analysis/sienna.html) ecosystem ([PowerSystems.jl](https://github.com/NREL-Sienna/PowerSystems.jl), [PowerSimulations.jl](https://github.com/NREL-Sienna/PowerSimulations.jl)) and [PowerModels.jl](https://github.com/lanl-ansi/PowerModels.jl) data parsing.
 
 ## Scenarios
 
