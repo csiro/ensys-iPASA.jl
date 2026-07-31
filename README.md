@@ -152,4 +152,4 @@ Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-BSD 3-Clause — see [LICENSE.md](LICENSE.md).
+BSD 3-Clause — see [LICENSE](LICENSE).
