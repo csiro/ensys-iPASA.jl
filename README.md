@@ -133,12 +133,10 @@ iPASA was developed under the CSIRO Applied Research Program for Sustainability 
 
 Cite the report as:
 
-> Mohy Ud Din, Ghulam; Bala, Biswajit; Wang, Yunqi; Wu, Helen. *Security-Constrained Planning and Adequacy Assessment of the Australian NEM Transition: An Interoperable High-Fidelity Open-Source Framework*. Energy CSIRO: CSIRO; 2026. csiro:EP2026-2231. http://hdl.handle.net/102.100.100/776637?index=1
-
 ```bibtex
 @techreport{iPASAReport,
   title       = {Security-Constrained Planning and Adequacy Assessment of the Australian NEM Transition: An Interoperable High-Fidelity Open-Source Framework},
-  author      = {G. Mohy-ud-din, and B. Bala, and Y. Wang, and H. Wu},
+  author      = {Ghulam Mohy-ud-din, and Biswajit Bala, and Yunqi Wang, and Helen Wu},
   institution = {CSIRO},
   year        = {2026},
   number      = {EP2026-2231},
