@@ -125,6 +125,27 @@ using Pkg; Pkg.test("iPASA")
 
 The suite runs fast unit tests plus an integration test that builds the full SNEM system and runs a 2-sample PRAS assessment. Environment switches: `IPASA_TEST_SKIP_SYSTEM=true` skips the slow integration tests; `IPASA_TEST_SAMPLES=<n>` changes the Monte Carlo sample count (default 2 — production studies use ≥ 100 via the scripts).
 
+## Project report
+
+iPASA was developed under the CSIRO Applied Research Program for Sustainability Transition (AR-PST), Topic 4.2, as an interoperable, high-fidelity, open-source framework for security-constrained planning and adequacy assessment of the NEM transition. The full project report is published by CSIRO and available at:
+
+**[Security-Constrained Planning and Adequacy Assessment of the Australian NEM Transition: An Interoperable High-Fidelity Open-Source Framework](https://www.csiro.au/-/media/Energy/AR-PST/Topic-4-2_S5_Final.pdf)** (PDF)
+
+Cite the report as:
+
+> Mohy Ud Din, Ghulam; Bala, Biswajit; Wang, Yunqi; Wu, Helen. *Security-Constrained Planning and Adequacy Assessment of the Australian NEM Transition: An Interoperable High-Fidelity Open-Source Framework*. Energy CSIRO: CSIRO; 2026. csiro:EP2026-2231. http://hdl.handle.net/102.100.100/776637?index=1
+
+```bibtex
+@techreport{iPASAReport,
+  title       = {Security-Constrained Planning and Adequacy Assessment of the Australian NEM Transition: An Interoperable High-Fidelity Open-Source Framework},
+  author      = {G. Mohy-ud-din, and B. Bala, and Y. Wang, and H. Wu},
+  institution = {CSIRO},
+  year        = {2026},
+  number      = {EP2026-2231},
+  url         = {http://hdl.handle.net/102.100.100/776637?index=1}
+}
+```
+
 ## Citing iPASA
 
 If you use iPASA in your research, please cite:
@@ -140,6 +161,23 @@ If you use iPASA in your research, please cite:
 
 Please also cite the underlying tools: PRAS ([Stephen et al., 2021](https://doi.org/10.11578/dc.20190814.1)).
 
+## Acknowledgments
+
+`iPASA.jl` was developed by the CSIRO Energy under the Australian Research
+ in Power Systems Transition (AR-PST) programme. We acknowledge:
+
+- The AR-PST project grant for Topic 4-C in stage 5, titled: Interoperable
+  Planning of Energy Infrastructure Ensuring System Security and Resource  
+  Adequacy using High-Fidelity Open-Source Models.
+- The Australian Energy Market Operator (AEMO) for the 2024 Integrated
+  System Plan, the IASR, the published generator and connection-point
+  data, and the 2025 ESOO that anchored the demand, generation, and
+  reliability inputs of this work.
+- CSIRO for the open S-NEM2000 baseline dataset used in this work.
+- NRL for Sienna suite of tools, which this package interoperates with directly.
+- LANL for the PowerModels ecosystem of tools, used to buit sctnep model.
+- KU Leuven for the PowerModelsACDC extension covering HVDC models, used to buit sctnep model.
+- The wider open-source power-system community.
 
 ## Development
 
