@@ -179,8 +179,8 @@ Please also cite the underlying tools: PRAS ([Stephen et al., 2021](https://doi.
 
 ## Development
 
-Lead developer: Mr Bala Biswajit (Senior Engineer, Energy Systems Transition, Energy, CSIRO)  
-Co-developer: Dr Ghulam Mohy-ud-din (Senior Power System Research Engineer, Energy Systems Transition, Energy, CSIRO)
+Mr Bala Biswajit (Senior Engineer, Energy Systems Transition, Energy, CSIRO)  
+Dr Ghulam Mohy-ud-din (Senior Power System Research Engineer, Energy Systems Transition, Energy, CSIRO)
 
 ## Contributing
 
