@@ -3,7 +3,7 @@ using Documenter, iPASA
 makedocs(
     modules = [iPASA],
     sitename = "iPASA.jl",
-    authors = "CSIRO Energy Systems",
+    authors = "Biswajit Bala, Ghulam Mohy-ud-din",
     format = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true"),
     pages = [
         "Home" => "index.md",
@@ -12,4 +12,4 @@ makedocs(
     warnonly = true,
 )
 
-deploydocs(repo = "github.com/csiro-energy-systems/iPASA.jl.git")
+deploydocs(repo = "github.com/csiro-internal/ensys-iPASA.jl.git")
