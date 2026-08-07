@@ -161,7 +161,7 @@ Please also cite the underlying tools: PRAS ([Stephen et al., 2021](https://doi.
 
 ## Acknowledgments
 
-`iPASA.jl` was developed by the CSIRO Energy under the Australian Research
+ iPASA.jl was developed by the CSIRO Energy under the Australian Research
  in Power Systems Transition (AR-PST) programme. We acknowledge:
 
 - The AR-PST project grant for Topic 4-C in stage 5, titled: Interoperable
