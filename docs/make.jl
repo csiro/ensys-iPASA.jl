@@ -16,7 +16,7 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/csiro-internal/ensys-iPASA.jl.git",
+    repo = "github.com/csiro/ensys-iPASA.jl.git",
     devbranch = "main",
     push_preview = true,
 )
