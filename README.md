@@ -9,8 +9,13 @@
 [![AR-PST](https://img.shields.io/badge/AR--PST-Stage%205-009e8d.svg)](https://www.csiro.au/en/research/technology-space/energy/electricity-transition/ar-pst)
 [![CSIRO DAP](https://img.shields.io/badge/CSIRO-DAP-009e8d.svg)](https://doi.org/10.25919/7j2y-c896)
 [![DOI](https://img.shields.io/badge/DOI-10.25919%2F7j2y--c896-blue.svg)](https://doi.org/10.25919/7j2y-c896)
+[![Documentation](https://github.com/csiro/ensys-iPASA.jl/actions/workflows/Documentation.yml/badge.svg)](https://csiro.github.io/ensys-iPASA.jl/)
 
 iPASA is a Julia package for projected assessment of system adequacy assessment of the NEM. It couples an open [Synthetic NEM](https://github.com/csiro-energy-systems/Synthetic-NEM-2000bus-Data) network model, clustered into 15 ISP sub-regions, with AEMO 2024 Integrated System Plan (ISP) data, and evaluates adequacy metrics (LOLE, EUE, NEUE) with sequential Monte Carlo simulation via [PRAS](https://github.com/NREL/PRAS). It also enables detailed production cost modelling based on sequential unit commitment and economic dispatch simulations, supporting comprehensive assessment of operational strategies and system performance. The system modelling is built on the [Sienna](https://www.nrel.gov/analysis/sienna.html) ecosystem ([PowerSystems.jl](https://github.com/NREL-Sienna/PowerSystems.jl), [PowerSimulations.jl](https://github.com/NREL-Sienna/PowerSimulations.jl)) and [PowerModels.jl](https://github.com/lanl-ansi/PowerModels.jl) data parsing.
+
+## Documentation
+
+See — [Documentation](https://csiro.github.io/ensys-iPASA.jl).
 
 ## Scenarios
 
