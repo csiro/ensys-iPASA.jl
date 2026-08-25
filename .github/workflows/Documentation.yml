@@ -5,22 +5,20 @@ on:
     branches:
       - main
     tags: ['*']
-  pull_request:
   workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  cancel-in-progress: true
 
 jobs:
   build:
     name: Build and deploy docs
     runs-on: ubuntu-latest
+
     permissions:
-      actions: write      # needed to allow julia-actions/cache to delete old caches
-      contents: write     # needed to push to the gh-pages branch
-      pull-requests: read # needed for previews of docs on pull requests
-      statuses: write     # needed to report the doc-preview status back to the PR
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
 
@@ -40,5 +38,4 @@ jobs:
       - name: Build and deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
         run: julia --project=docs docs/make.jl
